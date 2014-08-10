@@ -3,7 +3,8 @@
 <project name="YADrone" default="dist" basedir=".">
 
 	<path id="dist.classpath">
-		<fileset dir="lib" includes="**/*.jar **/*.zip" />
+		<!--<fileset dir="lib" includes="**/*.jar **/*.zip" />-->
+		<fileset dir="/Program files/apache/apache-tomcat/lib" includes="**/*.jar **/*.zip" />
 	</path>
 	<property name="dist.dir.location" location="dist" />
 		
@@ -24,7 +25,7 @@
 		<javac debug="true" srcdir="src" destdir="bin" excludes="sample/** **/test/**.*" includeantruntime="false">
 			<classpath>
 				<pathelement path="${classpath}"/>
-			    <fileset dir="lib" includes="**/*.jar" />
+			    <!--<fileset dir="lib" includes="**/*.jar" />-->
 			</classpath>
 		</javac>
 	</target>
@@ -32,13 +33,13 @@
 	<!-- Create the jar file. -->
 	<target name="dist" depends="compile" description="Create the jar file">
 		<mkdir dir="dist"/>
-		<mkdir dir="dist/lib"/>
+		<!--<mkdir dir="dist/lib"/>-->
 		
 		<!-- prepare the manifest classpath -->
 		<path id="manifest.classpath">
-			<fileset dir="dist/lib">
+			<!--<fileset dir="dist/lib">
 				<include name="**/*.*" />
-			</fileset>
+			</fileset>-->
 		</path>
 		<!-- convert lib folder to string property for use in manifest classpath -->
 		<pathconvert targetos="unix" property="string.classpath" pathsep=" ">
@@ -56,9 +57,9 @@
 			</manifest>
 		</jar>
 		
-		<copy todir="dist/lib">
+		<!--<copy todir="dist/lib">
 			<fileset dir="lib" includes="**/*.jar" excludes=""/>
-		</copy>
+		</copy>-->
 	</target>
 	
 	<target name="run" depends="dist" description="Run Control Center">

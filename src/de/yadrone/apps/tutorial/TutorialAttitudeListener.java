@@ -34,11 +34,11 @@ public class TutorialAttitudeListener
 			
 			public void attitudeUpdated(float pitch, float roll, float yaw)
 			{
-		    	System.out.println("Pitch: " + pitch + " Roll: " + roll + " Yaw: " + yaw);
+		    	//System.out.println("Pitch: " + pitch + " Roll: " + roll + " Yaw: " + yaw);
 			}
 
 			public void attitudeUpdated(float pitch, float roll) { 
-		    	System.out.println("Pitch: " + pitch + " Roll: " + roll);
+		    	//System.out.println("Pitch: " + pitch + " Roll: " + roll);
 			}
 			public void windCompensation(float pitch, float roll) { }
 		});
@@ -53,36 +53,36 @@ public class TutorialAttitudeListener
 		*/
 		drone.getNavDataManager().addAltitudeListener(new AltitudeListener() {
 			public void receivedExtendedAltitude(Altitude ud) {
-				//System.out.println("Ext. Alt.:"+ud);
+				System.out.println("Ext. Alt.:"+ud);
 			}
 			@Override
 			public void receivedAltitude(int altitude) {
-				//System.out.println("Altitude: "+altitude);
+				System.out.println("Altitude: "+altitude);
 			}
 		});
 		
 		drone.getNavDataManager().addVelocityListener(new VelocityListener() {
 			@Override
 			public void velocityChanged(float vx, float vy, float vz) {
-				System.out.println("Velocity delta x:"+vx+" y:"+vy+" z:"+vz);
+				//System.out.println("Velocity delta x:"+vx+" y:"+vy+" z:"+vz);
 			}
 		});
 		
 		drone.getNavDataManager().addGyroListener(new GyroListener() {
 			@Override
 			public void receivedRawData(GyroRawData d) {
-				System.out.println("GyroRaw:"+d);	
+				//System.out.println("GyroRaw:"+d);	
 			}
 			@Override
 			public void receivedPhysData(GyroPhysData d) {
-				System.out.println("GyroPhys:"+d);
+				//System.out.println("GyroPhys:"+d);
 				
 			}
 			@Override
 			public void receivedOffsets(float[] offset_g) {
-				System.out.print("GyroOffs:");
-				for(float f: offset_g) System.out.print("offs:"+f+" ");
-				System.out.println();
+				//System.out.print("GyroOffs:");
+				//for(float f: offset_g) System.out.print("offs:"+f+" ");
+				//System.out.println();
 			}
 	
 		});
@@ -90,12 +90,12 @@ public class TutorialAttitudeListener
 		drone.getNavDataManager().addAcceleroListener(new AcceleroListener() {
 			@Override
 			public void receivedRawData(AcceleroRawData d) {
-				System.out.println("Raw Accelero:"+d);
+				//System.out.println("Raw Accelero:"+d);
 			}
 
 			@Override
 			public void receivedPhysData(AcceleroPhysData d) {
-				System.out.println("Phys Accelero:"+d);
+				//System.out.println("Phys Accelero:"+d);
 				
 			}
 	
@@ -104,7 +104,7 @@ public class TutorialAttitudeListener
 		drone.getNavDataManager().addMagnetoListener(new MagnetoListener() {
 			@Override
 			public void received(MagnetoData d) {
-				System.out.println("Mag:"+d);	
+				//System.out.println("Mag:"+d);	
 			}
 
 		});
@@ -124,7 +124,7 @@ public class TutorialAttitudeListener
 		drone.getNavDataManager().addTemperatureListener(new TemperatureListener() {
 			@Override
 			public void receivedTemperature(Temperature d) {
-				System.out.println("Temp:"+d);
+				//System.out.println("Temp:"+d);
 				
 			}
 		});
@@ -132,6 +132,8 @@ public class TutorialAttitudeListener
 		drone.getNavDataManager().addUltrasoundListener(new UltrasoundListener() {
 			@Override
 			public void receivedRawData(UltrasoundData ud) {
+				//if( ud.getAssociationEcho() > 8 && ud.getAssociationEcho() != 3758)
+				if( ud.getAssociationEcho() == 17 )
 				System.out.println("Sonar:"+ud);
 				
 			}
@@ -140,7 +142,7 @@ public class TutorialAttitudeListener
 		drone.getNavDataManager().addRawDataListener(new RawDataListener() {
 			@Override
 			public void receivedRawData(RawData rd) {
-				System.out.println("Raw:"+rd);
+				//System.out.println("Raw:"+rd);
 			}		
 		});
 	}

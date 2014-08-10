@@ -103,7 +103,7 @@ public class RawData {
 			gx = ((float)gyro_110[0] - gyros110_offset[0]) * gyros110_gains[0];
 		if(gy > Math.toRadians(-100) && gy < Math.toRadians(100)) 
 			gy = ((float)gyro_110[1] - gyros110_offset[1]) * gyros110_gains[1];
-		h  = (float) ((float)((us_echo & 0x7fff)) * 0.0340);
+		h  = (float) us_echo;//(((float)(us_echo & 0x1fff)) * 0.0340);
 		h_meas = (us_echo >> 15) != 0;
 		tg  = (float) ((( (float)gyro_temp * 0.806 /*mv/lsb*/ ) - 1250 /*Offset 1250mV at room temperature*/) / 4.0 /*Sensitivity 4mV/°C*/ + 20 /*room temperature*/);
 		ta  = (float) (((float)acc_temp) * 0.5 /*C/lsb*/ - 30 /*Offset is -30C*/);

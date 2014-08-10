@@ -116,7 +116,18 @@ public class UltrasoundData {
 	public short getGradient() {
 		return gradient;
 	}
-
+	/*The measured distance from the range 0 to 400 Centimeters*/
+	int microsecondsToCentimeters(int duration)
+	{
+		return duration/29/2;	
+	}
+	
+	/*The measured distance from the range 0 to 157 Inches*/
+	int microsecondsToInches(int duration)
+	{
+		return duration/74/2;	
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -127,6 +138,8 @@ public class UltrasoundData {
 		builder.append(us_debut_echo);
 		builder.append(", us_fin_echo=");
 		builder.append(us_fin_echo);
+		builder.append(" init-final:");
+		builder.append(us_fin_echo-us_debut_echo);
 		builder.append(", us_association_echo=");
 		builder.append(us_association_echo);
 		builder.append(", us_distance_echo=");

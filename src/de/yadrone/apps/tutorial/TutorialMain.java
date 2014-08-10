@@ -36,6 +36,7 @@ public class TutorialMain
 			// Tutorial Section 3
 			new TutorialVideoListener(drone);
 			
+			new TutorialStateListener(drone);
 			// Tutorial Section 4
 //			TutorialCommander commander = new TutorialCommander(drone);
 //			commander.animateLEDs();
