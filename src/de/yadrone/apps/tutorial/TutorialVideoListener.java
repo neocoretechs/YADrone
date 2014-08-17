@@ -3,6 +3,7 @@ package de.yadrone.apps.tutorial;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -10,6 +11,9 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.WritableRaster;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import javax.swing.JFrame;
 
@@ -20,6 +24,7 @@ import com.twilight.h264.player.RGBListener;
 
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.video.VideoChannel;
+import de.yadrone.base.manager.ThreadPoolManager;
 
 /**
  * Mainly demonstrates how we can manipulate the 3 byte BGR buffer to publish to ROS or create
@@ -28,12 +33,14 @@ import de.yadrone.base.command.video.VideoChannel;
  * @author jg
  *
  */
-public class TutorialVideoListener
+public class TutorialVideoListener implements Runnable
 {
     private BufferedImage image = null;
     PlayerFrame displayPanel;
     IARDrone drone;
     boolean shouldRun = true;
+	public static ConcurrentLinkedDeque<AVFrame> list = new ConcurrentLinkedDeque<AVFrame>();
+    public static int FRAME_THRESHOLD = 10;
     
     public TutorialVideoListener(final IARDrone drone)
     {
@@ -58,6 +65,7 @@ public class TutorialVideoListener
 		frame.setSize(new Dimension(672, 418));
 		frame.setVisible(true);
 		playStream();
+		ThreadPoolManager.getInstance().spin(this);
     }
     
     private void playStream() {
@@ -65,25 +73,47 @@ public class TutorialVideoListener
         drone.getVideoManager().addImageListener(new RGBListener() {
 			@Override
 			public void imageUpdated(AVFrame newImage) {
-				//System.out.println("Image:"+newImage.imageWidth+","+newImage.imageHeight);
-				
-				image = new BufferedImage(newImage.imageWidth, newImage.imageHeight, BufferedImage.TYPE_3BYTE_BGR);
-			    WritableRaster raster = (WritableRaster) image.getRaster();
-	
-				//int bufferSize = newImage.imageWidth * newImage.imageHeight;
-				int bufferSize = newImage.imageWidth * newImage.imageHeight * 3;
-				int[] buffer = new int[bufferSize];
-				FrameUtils.YUV2RGB3(newImage, buffer); // RGBA 
-		        raster.setPixels(0, 0, newImage.imageWidth, newImage.imageHeight, buffer); 
-				displayPanel.lastFrame = image;
-				//displayPanel.lastFrame = displayPanel.createImage(new MemoryImageSource(newImage.imageWidth
-				//		, newImage.imageHeight, buffer, 0, newImage.imageWidth));
-				displayPanel.invalidate();
-				displayPanel.updateUI();
-				
+				synchronized(list) {
+					list.add(newImage);
+					list.notifyAll();
+				}
 			}
         });
-        
+    }
+    
+    public void run() {
+        AVFrame newImage = null;
+        while(true) {
+        	synchronized(list) {
+        		if( list.isEmpty()) {
+           			try {
+        						list.wait();
+        			} catch (InterruptedException e) {
+        						e.printStackTrace();
+        			}
+        		}
+        		if( list.size() > FRAME_THRESHOLD ) {
+        				for(int i = 0; i < FRAME_THRESHOLD/2; i++)
+        					list.remove();
+        		}
+        		newImage = list.pop();
+        	}
+			System.out.println("Image:"+newImage.imageWidth+","+newImage.imageHeight+" queue:"+list.size());
+				
+			image = new BufferedImage(newImage.imageWidth, newImage.imageHeight, BufferedImage.TYPE_3BYTE_BGR);
+			WritableRaster raster = (WritableRaster) image.getRaster();
+			//int bufferSize = newImage.imageWidth * newImage.imageHeight;
+			int bufferSize = newImage.imageWidth * newImage.imageHeight * 3;
+			int[] buffer = new int[bufferSize];
+			FrameUtils.YUV2RGB3(newImage, buffer); // RGBA 
+		    raster.setPixels(0, 0, newImage.imageWidth, newImage.imageHeight, buffer); 
+			displayPanel.lastFrame = image;
+			//displayPanel.lastFrame = displayPanel.createImage(new MemoryImageSource(newImage.imageWidth
+			//		, newImage.imageHeight, buffer, 0, newImage.imageWidth));
+			displayPanel.invalidate();
+			displayPanel.updateUI();
+				
+		}  
     }
 
 }
