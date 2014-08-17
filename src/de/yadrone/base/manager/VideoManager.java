@@ -17,24 +17,25 @@ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PRO
  */
 package de.yadrone.base.manager;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
+import com.twilight.h264.decoder.AVFrame;
+import com.twilight.h264.player.RGBListener;
+
 import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.exception.VideoException;
 import de.yadrone.base.utils.ARDroneUtils;
-import de.yadrone.base.video.ImageListener;
 import de.yadrone.base.video.VideoDecoder;
 
-public class VideoManager extends AbstractTCPManager implements ImageListener 
+public class VideoManager extends AbstractTCPManager implements RGBListener 
 {
 	private IExceptionListener excListener;
 	
 	private VideoDecoder decoder;
 
-	private ArrayList<ImageListener> listener = new ArrayList<ImageListener>();
+	private ArrayList<RGBListener> listener = new ArrayList<RGBListener>();
 
 	public VideoManager(InetAddress inetaddr, VideoDecoder decoder, IExceptionListener excListener) 
 	{
@@ -43,20 +44,20 @@ public class VideoManager extends AbstractTCPManager implements ImageListener
 		this.excListener = excListener;
 	}
 
-	public void addImageListener(ImageListener listener) {
+	public void addImageListener(RGBListener listener) {
 		this.listener.add(listener);
 		if (this.listener.size() == 1)
 			decoder.setImageListener(this);
 	}
 	
-	public void removeImageListener(ImageListener listener) {
+	public void removeImageListener(RGBListener listener) {
 		this.listener.remove(listener);
 		if (this.listener.size() == 0)
 			decoder.setImageListener(null);
 	}
 
 	/** Called only by decoder to inform all the other listener */
-	public void imageUpdated(BufferedImage image)
+	public void imageUpdated(AVFrame image)
 	{
 		for (int i=0; i < listener.size(); i++)
 		{

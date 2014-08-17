@@ -53,11 +53,11 @@ public class TutorialAttitudeListener
 		*/
 		drone.getNavDataManager().addAltitudeListener(new AltitudeListener() {
 			public void receivedExtendedAltitude(Altitude ud) {
-				System.out.println("Ext. Alt.:"+ud);
+				//System.out.println("Ext. Alt.:"+ud);
 			}
 			@Override
 			public void receivedAltitude(int altitude) {
-				System.out.println("Altitude: "+altitude);
+				//System.out.println("Altitude: "+altitude);
 			}
 		});
 		
@@ -128,16 +128,16 @@ public class TutorialAttitudeListener
 				
 			}
 		});
-		
-		drone.getNavDataManager().addUltrasoundListener(new UltrasoundListener() {
-			@Override
-			public void receivedRawData(UltrasoundData ud) {
+		// relatively useless, use altitude - extended
+		//drone.getNavDataManager().addUltrasoundListener(new UltrasoundListener() {
+			//@Override
+			//public void receivedRawData(UltrasoundData ud) {
 				//if( ud.getAssociationEcho() > 8 && ud.getAssociationEcho() != 3758)
-				if( ud.getAssociationEcho() == 17 )
-				System.out.println("Sonar:"+ud);
+				//if( ud.getAssociationEcho() == 17 )
+				//System.out.println("Sonar:"+ud);
 				
-			}
-		});
+			//}
+		//});
 		
 		drone.getNavDataManager().addRawDataListener(new RawDataListener() {
 			@Override

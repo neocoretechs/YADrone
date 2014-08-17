@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="sample/" kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="C:/Program Files/apache/apache-tomcat/lib/commons-net-1.4.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/apache/apache-tomcat/lib/jfreechart-1.0.14.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/apache/apache-tomcat/lib/jfreechart-1.0.14-swt.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/apache/apache-tomcat/lib/swtgraphics2d.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/apache/apache-tomcat/lib/jcommon-1.0.17.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/apache/apache-tomcat/lib/slf4j-api-1.7.2.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/apache/apache-tomcat/lib/slf4j-jdk14-1.7.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/h264j"/>
+	<classpathentry kind="lib" path="C:/Program Files/apache/apache-tomcat/lib/h264j.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

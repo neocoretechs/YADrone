@@ -1,80 +1,58 @@
 <?xml version="1.0"?>
+<project name="ARDroneBuild" default="main" basedir=".">
+  <!-- Sets variables which can later be used. -->
+  <!-- The value of a property is accessed via ${} -->
+  <property name="src.dir" location="src" />
+  <property name="build.dir" location="bin" />
+  <property name="docs.dir" location="docs" />
+  <property name="lib.dir" location="/Program Files/Apache/apache-tomcat/lib" />
+	<!--
+  <property name="dist.dir" location="dist" />
+  -->
 
-<project name="YADrone" default="dist" basedir=".">
+  <!-- Deletes the existing build, docs and dist directory-->
+  <target name="clean">
+    <delete dir="${build.dir}" />
+   <!-- <delete dir="${docs.dir}" />
+    <delete dir="${dist.dir}" />-->
+  </target>
 
-	<path id="dist.classpath">
-		<!--<fileset dir="lib" includes="**/*.jar **/*.zip" />-->
-		<fileset dir="/Program files/apache/apache-tomcat/lib" includes="**/*.jar **/*.zip" />
-	</path>
-	<property name="dist.dir.location" location="dist" />
-		
-	<property name="classpath" refid="dist.classpath"/>
+  <!-- Creates the  build, docs and dist directory-->
+  <target name="makedir">
+    <mkdir dir="${build.dir}" />
+    <!--<mkdir dir="${docs.dir}" />
+    <mkdir dir="${dist.dir}" />-->
+  </target>
+
+  <!-- Compiles the java code (including the usage of library for JUnit -->
+  <target name="compile" depends="makedir">
+    <javac srcdir="${src.dir}" destdir="${build.dir}" classpath="${lib.dir}/netty-3.2.0.Final.jar:${lib.dir}/commons-pool-1.6.jar:${lib.dir}/commons-lang-2.6.jar:${lib.dir}/ws-commons-util-1.0.1.jar:${lib.dir}/commons-httpclient-3.1.jar:${lib.dir}/en_us.jar:${lib.dir}/commons-digester-1.8.1.jar:${lib.dir}/xmlrpc-common-3.1.3.jar:${lib.dir}/xmlrpc-server.jar:${lib.dir}/commons-logging-1.1.2.jar:${lib.dir}/commons-io-2.4.jar:${lib.dir}/RosBase.jar:${lib.dir}/xmlrpc-client-3.1.3.jar:${lib.dir}/commons-net-1.4.1.jar:${lib.dir}/RosMsgs.jar:${lib.dir}/Ros.jar:${lib.dir}/h264j.jar">
+    </javac>
+
+  </target>
+
+  <!-- Creates Javadoc -->
+  <target name="docs" depends="compile">
+    <javadoc packagenames="src" sourcepath="${src.dir}" destdir="${docs.dir}">
+      <!-- Define which files / directory should get included, we include all -->
+       <fileset dir="${src.dir}">
+                <include name="**" />
+           </fileset>
+    </javadoc>
+  </target>
+
+  <!--Creates the deployable jar file  -->
+  <target name="jar" depends="compile">
+    <jar destfile="${build.dir}\yadrone_03.jar" basedir="${build.dir}" includes="**/de/**" excludes="**/*.java">
+    </jar>
+  </target>
+
+  <target name="copy" depends="jar">
+	<copy file="${build.dir}\yadrone_03.jar" todir="${lib.dir}"/>
+  </target>
 	
-	<property name="src.includes" value="**/*.xml **/*.png **/*.jpg"/>
-	<!--<property name="dist.excludes" value="**/mydir/**" />-->
+  <target name="main" depends="copy">
+    <description>Main target</description>
+  </target>
 
-	<target name="copyResources" description="Create dist-directories, copy all source- and lib-files">
-		<mkdir dir="bin"/>
-		<copy todir="bin">
-			<fileset dir="src" includes="${src.includes}" excludes="${dist.excludes}"/>
-		</copy>
-	</target>
-
-	<!-- Compile the sources. -->
-	<target name="compile" depends="copyResources" description="Compile the sources">
-		<javac debug="true" srcdir="src" destdir="bin" excludes="sample/** **/test/**.*" includeantruntime="false">
-			<classpath>
-				<pathelement path="${classpath}"/>
-			    <!--<fileset dir="lib" includes="**/*.jar" />-->
-			</classpath>
-		</javac>
-	</target>
-
-	<!-- Create the jar file. -->
-	<target name="dist" depends="compile" description="Create the jar file">
-		<mkdir dir="dist"/>
-		<!--<mkdir dir="dist/lib"/>-->
-		
-		<!-- prepare the manifest classpath -->
-		<path id="manifest.classpath">
-			<!--<fileset dir="dist/lib">
-				<include name="**/*.*" />
-			</fileset>-->
-		</path>
-		<!-- convert lib folder to string property for use in manifest classpath -->
-		<pathconvert targetos="unix" property="string.classpath" pathsep=" ">
-			<path refid="manifest.classpath" />
-			<map from="${dist.dir.location}" to="." />
-		</pathconvert>
-
-		
-		<jar destfile="dist/yadrone_03.jar">
-			<fileset dir="bin" includes="**/**" />
-			
-			<manifest>
-				<attribute name="Main-Class" value="de.yadrone.apps.controlcenter.YADroneControlCenter"/>
-				<attribute name="Class-Path" value="${string.classpath}"/>
-			</manifest>
-		</jar>
-		
-		<!--<copy todir="dist/lib">
-			<fileset dir="lib" includes="**/*.jar" excludes=""/>
-		</copy>-->
-	</target>
-	
-	<target name="run" depends="dist" description="Run Control Center">
-		<java classname="de.yadrone.apps.controlcenter.YADroneControlCenter" failonerror="true" fork="true">
-			<classpath>
-				<fileset dir="dist" includes="*.jar" />
-			    <fileset dir="dist/lib" includes="*.jar" />
-			</classpath>
-		</java> 	
-	</target>
-	
-	<!-- Remove generated files. -->
-	<target name="clean" description="Remove generated files">
-		<delete dir="bin" />
-		<delete dir="dist" />
-	</target>
-</project>
-
+</project> 

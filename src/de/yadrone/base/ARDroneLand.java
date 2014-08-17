@@ -37,7 +37,8 @@ import de.yadrone.base.manager.VideoManager;
 import de.yadrone.base.video.VideoDecoder;
 import de.yadrone.base.video.h264j.H264Decoder;
 
-public class ARDrone implements IARDrone, IExceptionListener {
+
+public class ARDroneLand implements IARDroneLand, IExceptionListener {
 
 	/** default ip address */
 	private static final String IP_ADDRESS = "192.168.1.1";
@@ -61,11 +62,11 @@ public class ARDrone implements IARDrone, IExceptionListener {
 	private Set<ISpeedListener> speedListener = null;
 
 	/** constructor */
-	public ARDrone() {
+	public ARDroneLand() {
 		this(IP_ADDRESS);
 	}
 
-	public ARDrone(String ipaddr) {
+	public ARDroneLand(String ipaddr) {
 		this(ipaddr, new H264Decoder());
 	}
 	
@@ -74,7 +75,7 @@ public class ARDrone implements IARDrone, IExceptionListener {
 	 * @param ipaddr  The address of the drone, e.g. 192.168.1.1
 	 * @param videoDecoder  A decoder instance, e.g. 'new H264Decoder' or null, if video shall not be used (e.g. on Android devices)
 	 */
-	public ARDrone(String ipaddr, VideoDecoder videoDecoder) {
+	public ARDroneLand(String ipaddr, VideoDecoder videoDecoder) {
 		this.ipaddr = ipaddr;
 		this.videoDecoder = videoDecoder;
 		this.speedListener = new HashSet<ISpeedListener>();
@@ -103,8 +104,10 @@ public class ARDrone implements IARDrone, IExceptionListener {
 	public synchronized VideoManager getVideoManager() {
 		// videoDecoder may only be null if the corresponding constructor of this class has been called with null
 		// this can should be done when working e.g. with Android devices
-		if (videoDecoder == null)
+		if (videoDecoder == null) {
+			System.out.println("No Video Decoder!");
 			return null;
+		}
 		
 		if (videoManager == null) {
 			InetAddress ia = getInetAddress();
@@ -127,7 +130,6 @@ public class ARDrone implements IARDrone, IExceptionListener {
 	@Override
 	public void stop() {
 		freeze();
-		landing();
 		//CommandManager cm = getCommandManager();
 		//cm.stop();
 		ConfigurationManager cfgm = getConfigurationManager();
@@ -179,23 +181,6 @@ public class ARDrone implements IARDrone, IExceptionListener {
 			commandManager.setVideoChannel(VideoChannel.NEXT);
 	}
 
-	@Override
-	public void landing() {
-		if (commandManager != null)
-			commandManager.landing();
-	}
-
-	@Override
-	public void takeOff() {
-		if (commandManager != null)
-		{
-			// we send emergency command before we take off which will toggle emergency mode off if the drone is actualy in emergency mode
-			// contributed by Naushad, see post on https://projects.ardrone.org/boards/1/topics/show/5259 from 30.04.2014
-	        commandManager.emergency();
-	        
-			commandManager.takeOff();
-		}
-	}
 
 	@Override
 	public void reset() {
@@ -227,17 +212,6 @@ public class ARDrone implements IARDrone, IExceptionListener {
 			commandManager.spinLeft(speed);
 	}
 
-	@Override
-	public void up() {
-		if (commandManager != null)
-			commandManager.up(speed);
-	}
-
-	@Override
-	public void down() {
-		if (commandManager != null)
-			commandManager.down(speed);
-	}
 
 	@Override
 	public void goRight() {
@@ -262,23 +236,6 @@ public class ARDrone implements IARDrone, IExceptionListener {
 			commandManager.hover();
 	}
 	
-	@Override
-	public void setMaxAltitude(int altitude) {
-		if (commandManager != null)
-			commandManager.setMaxAltitude(altitude);
-	}
-
-	@Override
-	public void setMinAltitude(int altitude) {
-		if (commandManager != null)
-			commandManager.setMinAltitude(altitude);
-	}
-
-	@Override
-	public void move3D(int speedX, int speedY, int speedZ, int speedSpin) {
-		if (commandManager != null)
-			commandManager.move(speedX, speedY, speedZ, speedSpin);
-	}
 
 	@Override
 	public void setSpeed(int speed) {
@@ -309,12 +266,12 @@ public class ARDrone implements IARDrone, IExceptionListener {
 		return speed;
 	}
 	
-	public void addSpeedListener(ISpeedListener speedListener)
+	public void addSpeedListener(ARDrone.ISpeedListener speedListener)
 	{
-		this.speedListener.add(speedListener);
+		this.speedListener.add((ISpeedListener) speedListener);
 	}
 	
-	public void removeSpeedListener(ISpeedListener speedListener)
+	public void removeSpeedListener(ARDrone.ISpeedListener speedListener)
 	{
 		this.speedListener.remove(speedListener);
 	}
@@ -377,5 +334,12 @@ public class ARDrone implements IARDrone, IExceptionListener {
 			}
 		}
 		return inetaddr;
+	}
+
+
+	@Override
+	public void move2D(int speedX, double angular) {
+		// TODO Auto-generated method stub
+		
 	}
 }

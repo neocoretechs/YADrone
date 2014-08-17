@@ -1,66 +1,89 @@
 package de.yadrone.apps.tutorial;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.MemoryImageSource;
+import java.awt.image.WritableRaster;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
-
+import com.twilight.h264.decoder.AVFrame;
+import com.twilight.h264.player.FrameUtils;
+import com.twilight.h264.player.PlayerFrame;
+import com.twilight.h264.player.RGBListener;
 
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.video.VideoChannel;
-import de.yadrone.base.video.ImageListener;
 
-public class TutorialVideoListener extends JFrame
+/**
+ * Mainly demonstrates how we can manipulate the 3 byte BGR buffer to publish to ROS or create
+ * a bufferedimage from that payload. Video here is clunky and there are better ways to view the raw video stream using the
+ * other H264 classes 
+ * @author jg
+ *
+ */
+public class TutorialVideoListener
 {
     private BufferedImage image = null;
+    PlayerFrame displayPanel;
+    IARDrone drone;
+    boolean shouldRun = true;
     
     public TutorialVideoListener(final IARDrone drone)
     {
-        super("YADrone Tutorial");
-        
-        setSize(640,360);
-        setVisible(true);
-        
-        drone.getVideoManager().addImageListener(new ImageListener() {
-            public void imageUpdated(BufferedImage newImage)
-            {
-            	image = newImage;
-        		SwingUtilities.invokeLater(new Runnable() {
-        			public void run()
-        			{
-        				repaint();
-        			}
-        		});
-            }
-        });
-        
-        addMouseListener(new MouseAdapter() {
+        this.drone = drone;
+		JFrame frame = new JFrame("Player");
+		frame.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e)
             {
             	drone.getCommandManager().setVideoChannel(VideoChannel.NEXT);
             }
         });
-
-        // close the 
-        addWindowListener(new WindowAdapter() {
+		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) 
 			{
 				drone.stop();
-				System.exit(0);
 			}
 		});
+        displayPanel = new PlayerFrame();
+		frame.getContentPane().add(displayPanel, BorderLayout.CENTER);
+		displayPanel.setVisible(true);
+		frame.pack();
+		frame.setSize(new Dimension(672, 418));
+		frame.setVisible(true);
+		playStream();
     }
     
-    public synchronized void paint(Graphics g)
-    {
-        if (image != null)
-			g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
+    private void playStream() {
+		
+        drone.getVideoManager().addImageListener(new RGBListener() {
+			@Override
+			public void imageUpdated(AVFrame newImage) {
+				//System.out.println("Image:"+newImage.imageWidth+","+newImage.imageHeight);
+				
+				image = new BufferedImage(newImage.imageWidth, newImage.imageHeight, BufferedImage.TYPE_3BYTE_BGR);
+			    WritableRaster raster = (WritableRaster) image.getRaster();
+	
+				//int bufferSize = newImage.imageWidth * newImage.imageHeight;
+				int bufferSize = newImage.imageWidth * newImage.imageHeight * 3;
+				int[] buffer = new int[bufferSize];
+				FrameUtils.YUV2RGB3(newImage, buffer); // RGBA 
+		        raster.setPixels(0, 0, newImage.imageWidth, newImage.imageHeight, buffer); 
+				displayPanel.lastFrame = image;
+				//displayPanel.lastFrame = displayPanel.createImage(new MemoryImageSource(newImage.imageWidth
+				//		, newImage.imageHeight, buffer, 0, newImage.imageWidth));
+				displayPanel.invalidate();
+				displayPanel.updateUI();
+				
+			}
+        });
+        
     }
+
 }
