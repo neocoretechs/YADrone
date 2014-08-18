@@ -31,11 +31,13 @@ public abstract class AbstractManager implements Runnable {
 	protected DatagramSocket socket = null;
 	protected boolean connected = false;
 	protected boolean doStop = false;
+	private int port;
 	public AbstractManager(InetAddress inetaddr) {
 		this.inetaddr = inetaddr;
 	}
 
 	public boolean connect(int port) {
+		this.port = port;
 		try {
 			socket = new DatagramSocket(port);
 			socket.setSoTimeout(3000);
@@ -47,7 +49,12 @@ public abstract class AbstractManager implements Runnable {
 		connected = true;
 		return true;
 	}
-
+	
+	public boolean reconnect() {
+		close();
+		return connect(port);
+	}
+	
 	public boolean isConnected() {
 		return connected;
 	}

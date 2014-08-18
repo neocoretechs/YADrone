@@ -443,7 +443,8 @@ public class NavDataManager extends AbstractManager
 			catch (SocketTimeoutException t) 
 			{
 				System.err.println("Navdata reception timeout");
-				excListener.exeptionOccurred(new de.yadrone.base.exception.NavDataException(t));
+				if( !reconnect() )
+					excListener.exeptionOccurred(new de.yadrone.base.exception.NavDataException(t));
 			} 
 			catch (Throwable t) 
 			{
