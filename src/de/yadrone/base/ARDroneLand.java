@@ -338,8 +338,9 @@ public class ARDroneLand implements IARDroneLand, IExceptionListener {
 
 
 	@Override
-	public void move2D(int speedX, double angular) {
-		// TODO Auto-generated method stub
+	public void move2D(int speedX, float angular) {
+		//MotorControl mc = new MotorControl();
+		//mc.setMotorSpeed(speedX, angular);
 		
 	}
 }

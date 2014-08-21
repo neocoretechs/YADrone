@@ -12,7 +12,7 @@ public class H264Decoder implements VideoDecoder
 	private RGBListener listener;
 	private Object listenerMutex = new Object();
 
-	public void decode(InputStream is)
+	public void decode(InputStream is) throws Exception
 	{
 		//H264StreamPlayer hsd = new H264StreamPlayer(is);
 		//hsd.playStream();

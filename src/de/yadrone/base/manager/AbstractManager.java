@@ -51,8 +51,16 @@ public abstract class AbstractManager implements Runnable {
 	}
 	
 	public boolean reconnect() {
-		close();
-		return connect(port);
+		try {
+			close();
+			Thread.sleep(50);
+			connect(port);
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+		}
+		if( connected )
+			ticklePort(port);
+		return connected;
 	}
 	
 	public boolean isConnected() {

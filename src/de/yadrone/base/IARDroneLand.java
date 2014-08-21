@@ -6,5 +6,5 @@ package de.yadrone.base;
  */
 public interface IARDroneLand extends IDrone {
 	
-	public void move2D(int speedX, double angular);
+	public void move2D(int speedX, float angular);
 }

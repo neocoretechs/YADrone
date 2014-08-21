@@ -99,26 +99,26 @@ public class VideoManager extends AbstractTCPManager implements RGBListener
 	public void run() {
 		if (decoder == null)
 			return;
-		try
-		{
-			System.out.println("VideoManager: connect ");
-			connect(ARDroneUtils.VIDEO_PORT);
+		while(true) {
+			try
+			{
+				System.out.println("VideoManager: connect ");
+				connect(ARDroneUtils.VIDEO_PORT);
 			
-			System.out.println("VideoManager: tickle ");
-			ticklePort(ARDroneUtils.VIDEO_PORT);
+				System.out.println("VideoManager: tickle ");
+				ticklePort(ARDroneUtils.VIDEO_PORT);
 			
 //			manager.setVideoBitrateControl(VideoBitRateMode.DISABLED); // bitrate set to maximum
 			
-			System.out.println("VideoManager: decode ");
-			decoder.decode(getInputStream());
-		}
-		catch(Exception exc)
-		{
-			exc.printStackTrace();
-			excListener.exeptionOccurred(new VideoException(exc));
-		}
+				System.out.println("VideoManager: decode ");
+				decoder.decode(getInputStream());
+			} catch(Exception exc) {
+				//exc.printStackTrace();
+				//excListener.exeptionOccurred(new VideoException(exc));
+			}
 		
-		close();
+			close();
+		}
 	}
 
 	@Override
