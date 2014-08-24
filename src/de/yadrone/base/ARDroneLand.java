@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import com.neocoretechs.robocore.MotorControl;
+
 import de.yadrone.base.command.video.VideoChannel;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
@@ -336,11 +338,32 @@ public class ARDroneLand implements IARDroneLand, IExceptionListener {
 		return inetaddr;
 	}
 
-
+	/**
+	 * Move relative with some rudimentary checks for excessive angular momentum and objects too close
+	 * and reduce motor rate by intermittent commandStop until values are acceptable.
+	 * The ARDrone US seems to flatten everything to 0 when objects 200mm closer or less
+	 */
 	@Override
-	public void move2D(int speedX, float angular) {
-		//MotorControl mc = new MotorControl();
-		//mc.setMotorSpeed(speedX, angular);
-		
+	public void move2DRelative(float yawIMURads, int yawTargetDegrees, int targetDistance, int targetTime, float[] accelDeltas, int[] ranges) {
+		MotorControl mc = new MotorControl();
+		// if any deltas > about 100, there is lateral force sufficient to raise wheels
+		// if any ranges close than about 200mm
+		if( ranges[0] < 225 || ranges[1] < 200 || 
+				accelDeltas[0] > 100.0f || accelDeltas[1] > 100.0f || accelDeltas[2] > 100.0f) {
+			mc.commandStop(); // pick up further motion on subsequent commands when accel deltas are nicer
+		} else
+			mc.moveRobotRelative(yawIMURads, yawTargetDegrees, targetDistance, targetTime);
+	}
+	
+	@Override
+	public void move2DAbsolute(float yawIMURads, int yawTargetDegrees, int targetDistance, int targetTime, float[] accelDeltas, int[] ranges) {
+		MotorControl mc = new MotorControl();
+		// if any deltas > about 100, there is lateral force sufficient to raise wheels
+		// if any ranges close than about 200mm
+		if( ranges[0] < 225 || ranges[1] < 200 || 
+				accelDeltas[0] > 100.0f || accelDeltas[1] > 100.0f || accelDeltas[2] > 100.0f) {
+			mc.commandStop(); // pick up further motion on subsequent commands when accel deltas are nicer
+		} else
+			mc.moveRobotAbsolute(yawIMURads, yawTargetDegrees, targetDistance, targetTime);
 	}
 }

@@ -651,29 +651,29 @@ public class NavDataManager extends AbstractManager
 		if (videoListener.size() > 0) {
 			// assumption: does not exceed Integer.MAX_INT
 			HDVideoState hdvideo_state = HDVideoState.fromInt(b.getInt());
-
+			System.out.println(HDVideoState.toString(hdvideo_state));
 			// assumption: does not exceed Integer.MAX_INT
 			int storage_fifo_nb_packets = b.getInt();
-
+			System.out.println("FIFO packs:"+storage_fifo_nb_packets);
 			// assumption: does not exceed Integer.MAX_INT
 			int storage_fifo_size = b.getInt();
-
+			System.out.println("FIFO size:"+storage_fifo_size);
 			// assumption: USB key size below Integer.MAX_INT kbytes
 			// USB key in kbytes - 0 if no key present
 			int usbkey_size = b.getInt();
-
+			System.out.println("USB key size:"+usbkey_size);
 			// assumption: USB key size below Integer.MAX_INT kbytes
 			// USB key free space in kbytes - 0 if no key present
 			int usbkey_freespace = b.getInt();
-
+			System.out.println("USB key space:"+usbkey_freespace);
 			// 'frame_number' PaVE field of the frame starting to be encoded for
 			// the
 			// HD stream
 			int frame_number = b.getInt();
-
+			System.out.println("Frame:"+frame_number);
 			// remaining time in seconds
 			int usbkey_remaining_time = b.getInt();
-
+			System.out.println("USB time:"+usbkey_remaining_time);
 			HDVideoStreamData d = new HDVideoStreamData(hdvideo_state, storage_fifo_nb_packets, storage_fifo_size,
 					usbkey_size, usbkey_freespace, frame_number, usbkey_remaining_time);
 			
@@ -827,7 +827,7 @@ public class NavDataManager extends AbstractManager
 			VideoStreamData d = new VideoStreamData(quant, frame_size, frame_number, atcmd_ref_seq, atcmd_mean_ref_gap,
 					atcmd_var_ref_gap, atcmd_ref_quality, out_bitrate, desired_bitrate, temp_data, tcp_queue_level,
 					fifo_queue_level);
-			
+			System.out.println(d);
 			for (int i=0; i < videoListener.size(); i++)
 				videoListener.get(i).receivedVideoStreamData(d);
 		}

@@ -41,6 +41,8 @@ public abstract class AbstractTCPManager implements Runnable {
 	{
 		try {
 			socket = new Socket(inetaddr, port);
+			socket.setTcpNoDelay(true);
+			socket.setReceiveBufferSize(16284);
 			socket.setSoTimeout(3000);
 		} catch (IOException e) {
 			e.printStackTrace();

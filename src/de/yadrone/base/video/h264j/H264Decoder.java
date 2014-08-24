@@ -21,8 +21,10 @@ public class H264Decoder implements VideoDecoder
 			synchronized(listenerMutex) {
 				try {
 					listenerMutex.wait();
-					if( listener == null )
+					if( listener == null ) {
+						System.out.println("H264Decoder RGBListener null, returning");
 						return; // we may have signaled stop
+					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

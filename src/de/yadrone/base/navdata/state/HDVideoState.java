@@ -29,4 +29,18 @@ public enum HDVideoState {
 		}
 		return null;
 	}
+	
+	public static String toString(HDVideoState hdv) {
+		switch(hdv) {
+		case STORAGE_FIFO_IS_FULL:
+			return "Storage FIFO is full";
+		case USBKEY_IS_PRESENT:
+			return "USB Key Present";
+		case USBKEY_IS_RECORDING:
+			return "USB Key recording";
+		case USBKEY_IS_FULL:
+			return "USB Key Full";
+		}
+		return "Unknown state";
+	}
 }
