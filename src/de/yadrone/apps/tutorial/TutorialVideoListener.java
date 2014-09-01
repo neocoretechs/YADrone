@@ -23,6 +23,7 @@ import com.twilight.h264.player.PlayerFrame;
 import com.twilight.h264.player.RGBListener;
 
 import de.yadrone.base.IARDrone;
+import de.yadrone.base.IDrone;
 import de.yadrone.base.command.video.VideoChannel;
 import de.yadrone.base.manager.ThreadPoolManager;
 
@@ -37,12 +38,12 @@ public class TutorialVideoListener implements Runnable
 {
     private BufferedImage image = null;
     PlayerFrame displayPanel;
-    IARDrone drone;
+    IDrone drone;
     boolean shouldRun = true;
 	public static ConcurrentLinkedDeque<AVFrame> list = new ConcurrentLinkedDeque<AVFrame>();
     public static int FRAME_THRESHOLD = 10;
     
-    public TutorialVideoListener(final IARDrone drone)
+    public TutorialVideoListener(final IDrone drone)
     {
         this.drone = drone;
 		JFrame frame = new JFrame("Player");
@@ -98,7 +99,7 @@ public class TutorialVideoListener implements Runnable
         		}
         		newImage = list.pop();
         	}
-			System.out.println("Image:"+newImage.imageWidth+","+newImage.imageHeight+" queue:"+list.size());
+			//System.out.println("Image:"+newImage.imageWidth+","+newImage.imageHeight+" queue:"+list.size());
 				
 			image = new BufferedImage(newImage.imageWidth, newImage.imageHeight, BufferedImage.TYPE_3BYTE_BGR);
 			WritableRaster raster = (WritableRaster) image.getRaster();

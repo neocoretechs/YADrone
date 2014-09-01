@@ -6,8 +6,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 
+
+
 import de.yadrone.base.ARDrone;
+import de.yadrone.base.ARDroneLand;
 import de.yadrone.base.IARDrone;
+import de.yadrone.base.IARDroneLand;
 import de.yadrone.base.command.led.LEDAnimation;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
@@ -18,11 +22,11 @@ public class TutorialMain
 
 	public static void main(String[] args)
 	{
-		IARDrone drone = null;
+		IARDroneLand drone = null;
 		try
 		{
 			// Tutorial Section 1
-			drone = new ARDrone();
+			drone = (IARDroneLand) new ARDroneLand();
 			drone.addExceptionListener(new IExceptionListener() {
 				public void exeptionOccurred(ARDroneException exc)
 				{
@@ -31,10 +35,10 @@ public class TutorialMain
 			});
 			drone.start();
 			// Tutorial Section 2
-			//new TutorialAttitudeListener(drone);
+			new TutorialAttitudeListener( drone);
 			
 			// Tutorial Section 3
-			new TutorialVideoListener(drone);
+			new TutorialVideoListener( drone);
 			
 			//new TutorialStateListener(drone);
 			// Tutorial Section 4

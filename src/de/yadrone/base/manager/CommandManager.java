@@ -214,8 +214,7 @@ public class CommandManager extends AbstractManager
 		return move(-perc2float(speed), 0f, 0f, 0f);
 	}
 
-	public CommandManager move(float lrtilt, float fbtilt, float vspeed, float aspeed, float magneto_psi,
-			float magneto_psi_accuracy) {
+	public CommandManager move(float lrtilt, float fbtilt, float vspeed, float aspeed, float magneto_psi, float magneto_psi_accuracy) {
 		lrtilt = limit(lrtilt, -1f, 1f);
 		fbtilt = limit(fbtilt, -1f, 1f);
 		vspeed = limit(vspeed, -1f, 1f);
@@ -906,12 +905,12 @@ public class CommandManager extends AbstractManager
 
 	private CommandManager initARDrone() 
 	{
-		ThreadPoolManager.getInstance().spin(new Runnable() {
-			public void run()
-			{
+		//ThreadPoolManager.getInstance().spin(new Runnable() {
+		//	public void run()
+		//	{
 				setMulticonfiguration();
-			}			
-		});
+		//	}			
+		//});
 		
 		waitFor(5000);
 		
@@ -923,8 +922,18 @@ public class CommandManager extends AbstractManager
 		
 		setOutdoor(true, true);
 		setMaxAltitude(100000);
-		setMaxVz(1000);
-		setMaxEulerAngle(0.25f);
+		setMaxVz(2000);
+		setMaxEulerAngle(0.52f);
+		setVideoCodec(VideoCodec.H264_360P);
+		setVideoBitrateControl(VideoBitRateMode.MANUAL);
+		setVideoBitrate(H264.MIN_BITRATE);
+		setMaxVideoBitrate(H264.MIN_BITRATE);
+		setVideoCodecFps(H264.MIN_FPS);
+		setDetectionType(CadType.MULTIPLE_DETECTION_MODE);
+		setDetectionType(DetectionType.HORIZONTAL,new VisionTagType[]{VisionTagType.ORIENTED_ROUNDEL, 
+				VisionTagType.BLACK_ROUNDEL, VisionTagType.ROUNDEL, VisionTagType.CAP, VisionTagType.SHELL_TAG,
+				VisionTagType.SHELL_TAG_V2, VisionTagType.STRIPE, VisionTagType.TOWER_SIDE});
+		//setVisionParameters(1,1,1,1,1,1,1,100000,1);
 		return this;
 	}
 

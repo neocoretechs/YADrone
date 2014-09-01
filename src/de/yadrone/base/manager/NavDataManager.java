@@ -178,12 +178,12 @@ public class NavDataManager extends AbstractManager
 
 	public void addBatteryListener(BatteryListener batteryListener) {
 		this.batteryListener.add(batteryListener);
-		setMask(this.batteryListener.size() == 1, new int[] { DEMO_TAG, RAW_MEASURES_TAG });
+		setMask(this.batteryListener.size() == 1, new int[] { DEMO_TAG/*, RAW_MEASURES_TAG */});
 	}
 	
 	public void removeBatteryListener(BatteryListener batteryListener) {
 		this.batteryListener.remove(batteryListener);
-		setMask(this.batteryListener.size() == 0, new int[] { DEMO_TAG, RAW_MEASURES_TAG });
+		setMask(this.batteryListener.size() == 0, new int[] { DEMO_TAG/*, RAW_MEASURES_TAG*/ });
 	}
 
 	public void addTimeListener(TimeListener timeListener) {
@@ -240,22 +240,22 @@ public class NavDataManager extends AbstractManager
 	
 	public void addAcceleroListener(AcceleroListener acceleroListener) {
 		this.acceleroListener.add(acceleroListener);
-		setMask(this.acceleroListener.size() == 1, new int[] { PHYS_MEASURES_TAG, RAW_MEASURES_TAG });
+		setMask(this.acceleroListener.size() == 1, new int[] { PHYS_MEASURES_TAG/*, RAW_MEASURES_TAG */});
 	}
 	
 	public void removeAcceleroListener(AcceleroListener acceleroListener) {
 		this.acceleroListener.remove(acceleroListener);
-		setMask(this.acceleroListener.size() == 0, new int[] { PHYS_MEASURES_TAG, RAW_MEASURES_TAG });
+		setMask(this.acceleroListener.size() == 0, new int[] { PHYS_MEASURES_TAG/*, RAW_MEASURES_TAG*/ });
 	}
 
 	public void addGyroListener(GyroListener gyroListener) {
 		this.gyroListener.add(gyroListener);
-		setMask(this.gyroListener.size() == 1, new int[] { GYROS_OFFSETS_TAG, PHYS_MEASURES_TAG, RAW_MEASURES_TAG });
+		setMask(this.gyroListener.size() == 1, new int[] { GYROS_OFFSETS_TAG, PHYS_MEASURES_TAG/*, RAW_MEASURES_TAG*/ });
 	}
 	
 	public void removeGyroListener(GyroListener gyroListener) {
 		this.gyroListener.remove(gyroListener);
-		setMask(this.gyroListener.size() == 0, new int[] { GYROS_OFFSETS_TAG, PHYS_MEASURES_TAG, RAW_MEASURES_TAG });
+		setMask(this.gyroListener.size() == 0, new int[] { GYROS_OFFSETS_TAG, PHYS_MEASURES_TAG/*, RAW_MEASURES_TAG */});
 	}
 
 	public void addUltrasoundListener(UltrasoundListener ultrasoundListener) {
