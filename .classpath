@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="C:/Program Files/apache/apache-tomcat/lib/slf4j-jdk14-1.7.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/h264j"/>
 	<classpathentry kind="lib" path="C:/Program Files/apache/apache-tomcat/lib/h264j.jar"/>
+	<classpathentry kind="src" path="/RoboCore"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

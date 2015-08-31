@@ -11,6 +11,7 @@ import java.util.concurrent.ThreadFactory;
  *
  */
 public class ThreadPoolManager {
+	private static final boolean DEBUG = false;
     DaemonThreadFactory dtf = new DaemonThreadFactory();
     ExecutorService executor = Executors.newCachedThreadPool(dtf);
 
@@ -30,9 +31,10 @@ public class ThreadPoolManager {
 	
 	public void shutdown() {
 		List<Runnable> spun = executor.shutdownNow();
-		for(Runnable rs : spun) {
-			System.out.println("Marked for Termination:"+rs.toString());
-		}
+		if( DEBUG )
+			for(Runnable rs : spun) {
+				System.out.println("Marked for Termination:"+rs.toString());
+			}
 	}
 	
 	class DaemonThreadFactory implements ThreadFactory {

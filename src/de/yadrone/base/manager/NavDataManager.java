@@ -83,7 +83,7 @@ import de.yadrone.base.utils.ARDroneUtils;
 //option: make it one abstract listener, disadvantage: each client has many methods to implement
 public class NavDataManager extends AbstractManager 
 {
-
+	private static final boolean DEBUG = false;
 	private IExceptionListener excListener;
 	
 	private static final int NB_ACCS = 3;
@@ -827,7 +827,8 @@ public class NavDataManager extends AbstractManager
 			VideoStreamData d = new VideoStreamData(quant, frame_size, frame_number, atcmd_ref_seq, atcmd_mean_ref_gap,
 					atcmd_var_ref_gap, atcmd_ref_quality, out_bitrate, desired_bitrate, temp_data, tcp_queue_level,
 					fifo_queue_level);
-			System.out.println(d);
+			if( DEBUG )
+				System.out.println(d);
 			for (int i=0; i < videoListener.size(); i++)
 				videoListener.get(i).receivedVideoStreamData(d);
 		}

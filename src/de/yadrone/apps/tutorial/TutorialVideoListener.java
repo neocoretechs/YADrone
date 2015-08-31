@@ -11,16 +11,20 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.twilight.h264.decoder.AVFrame;
 import com.twilight.h264.player.FrameUtils;
 import com.twilight.h264.player.PlayerFrame;
 import com.twilight.h264.player.RGBListener;
+import com.twilight.h264.util.Frame;
 
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.IDrone;
@@ -36,6 +40,7 @@ import de.yadrone.base.manager.ThreadPoolManager;
  */
 public class TutorialVideoListener implements Runnable
 {
+	private static final boolean DEBUG = false;
     private BufferedImage image = null;
     PlayerFrame displayPanel;
     IDrone drone;
@@ -63,7 +68,7 @@ public class TutorialVideoListener implements Runnable
 		frame.getContentPane().add(displayPanel, BorderLayout.CENTER);
 		displayPanel.setVisible(true);
 		frame.pack();
-		frame.setSize(new Dimension(672, 418));
+		frame.setSize(new Dimension(672, 400)); //672x418
 		frame.setVisible(true);
 		playStream();
 		ThreadPoolManager.getInstance().spin(this);
@@ -74,6 +79,8 @@ public class TutorialVideoListener implements Runnable
         drone.getVideoManager().addImageListener(new RGBListener() {
 			@Override
 			public void imageUpdated(AVFrame newImage) {
+				if( DEBUG )
+					System.out.println("Stream play adding image..");
 				synchronized(list) {
 					list.add(newImage);
 					list.notifyAll();
@@ -84,6 +91,7 @@ public class TutorialVideoListener implements Runnable
     
     public void run() {
         AVFrame newImage = null;
+        int frames = 0;
         while(true) {
         	synchronized(list) {
         		if( list.isEmpty()) {
@@ -94,26 +102,36 @@ public class TutorialVideoListener implements Runnable
         			}
         		}
         		if( list.size() > FRAME_THRESHOLD ) {
+        			System.out.println("dropping frames..");
         				for(int i = 0; i < FRAME_THRESHOLD/2; i++)
         					list.remove();
         		}
         		newImage = list.pop();
         	}
 			//System.out.println("Image:"+newImage.imageWidth+","+newImage.imageHeight+" queue:"+list.size());
-				
+
 			image = new BufferedImage(newImage.imageWidth, newImage.imageHeight, BufferedImage.TYPE_3BYTE_BGR);
 			WritableRaster raster = (WritableRaster) image.getRaster();
 			//int bufferSize = newImage.imageWidth * newImage.imageHeight;
 			int bufferSize = newImage.imageWidth * newImage.imageHeight * 3;
 			int[] buffer = new int[bufferSize];
 			FrameUtils.YUV2RGB3(newImage, buffer); // RGBA 
-		    raster.setPixels(0, 0, newImage.imageWidth, newImage.imageHeight, buffer); 
+		    raster.setPixels(0, 0, newImage.imageWidth, newImage.imageHeight, buffer);
+        	
+			/*
+			File f = new File("C://Users/jg/Downloads/roscoe"+(++frames)+".jpg");
+			try {
+				ImageIO.write(image, "jpg", f);
+				System.out.println("Wrote: roscoe"+frames+".jpg");
+			} catch (IOException e) {
+				System.out.println("Cant write image roscoe"+frames+".jpg");
+			}
+			*/
+        	
 			displayPanel.lastFrame = image;
-			//displayPanel.lastFrame = displayPanel.createImage(new MemoryImageSource(newImage.imageWidth
-			//		, newImage.imageHeight, buffer, 0, newImage.imageWidth));
 			displayPanel.invalidate();
 			displayPanel.updateUI();
-				
+        	
 		}  
     }
 

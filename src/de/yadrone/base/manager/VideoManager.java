@@ -31,6 +31,7 @@ import de.yadrone.base.video.VideoDecoder;
 
 public class VideoManager extends AbstractTCPManager implements RGBListener 
 {
+	private static final boolean DEBUG = false;
 	private IExceptionListener excListener;
 	
 	private VideoDecoder decoder;
@@ -75,23 +76,27 @@ public class VideoManager extends AbstractTCPManager implements RGBListener
 
 	public void reinitialize()
 	{
-		System.out.println("VideoManager: reinitialize video stream ...");
+		if( DEBUG )
+			System.out.println("VideoManager: reinitialize video stream ...");
 		close();
-		System.out.println("VideoManager: previous stream closed ...");
+		if( DEBUG )
+			System.out.println("VideoManager: previous stream closed ...");
 		try
 		{
-			System.out.println("VideoManager: create new decoder");
+			if( DEBUG)
+				System.out.println("VideoManager: create new decoder");
 			decoder.stop();
 			decoder = (VideoDecoder)decoder.getClass().newInstance();
 			decoder.setImageListener(this);
-			
 			Thread.sleep(1000);
 		}
 		catch (Exception e)
 		{
+			System.out.println("Exception re-initializing video stream");
 			e.printStackTrace();
 		}
-		System.out.println("VideoManager: start connecting again ...");
+		if(DEBUG)
+			System.out.println("VideoManager: start connecting again ...");
 		ThreadPoolManager.getInstance().spin(this);
 	}
 	
@@ -102,19 +107,22 @@ public class VideoManager extends AbstractTCPManager implements RGBListener
 		while(true) {
 			try
 			{
-				System.out.println("VideoManager: connect ");
+				if( DEBUG )
+					System.out.println("VideoManager: connect ");
 				connect(ARDroneUtils.VIDEO_PORT);
-			
-				System.out.println("VideoManager: tickle ");
+				if( DEBUG )
+					System.out.println("VideoManager: tickle ");
 				ticklePort(ARDroneUtils.VIDEO_PORT);
 			
-//			manager.setVideoBitrateControl(VideoBitRateMode.DISABLED); // bitrate set to maximum
-			
-				System.out.println("VideoManager: decode ");
+				//manager.setVideoBitrateControl(VideoBitRateMode.DISABLED); // bitrate set to maximum
+				if( DEBUG )
+					System.out.println("VideoManager: decode ");
 				decoder.decode(getInputStream());
 			} catch(Exception exc) {
-				//exc.printStackTrace();
-				//excListener.exeptionOccurred(new VideoException(exc));
+				if( DEBUG ) {
+					exc.printStackTrace();
+					excListener.exeptionOccurred(new VideoException(exc));
+				}
 			}
 		
 			close();

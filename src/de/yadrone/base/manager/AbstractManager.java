@@ -26,7 +26,7 @@ import java.net.SocketException;
 
 // TODO: investigate if we can refactor common parts with AbstractTCPManager
 public abstract class AbstractManager implements Runnable {
-
+	private static final boolean DEBUG = false;
 	protected InetAddress inetaddr = null;
 	protected DatagramSocket socket = null;
 	protected boolean connected = false;
@@ -75,7 +75,8 @@ public abstract class AbstractManager implements Runnable {
 	}
 
 	public void stop() {
-		System.out.println("AbstractManager: Stopping " + getClass().getSimpleName());
+		if( DEBUG )
+			System.out.println("AbstractManager: Stopping " + getClass().getSimpleName());
 		//if (thread != null) {
 		//	thread.interrupt();
 		//	doStop = true;
@@ -97,7 +98,8 @@ public abstract class AbstractManager implements Runnable {
 	}
 
 	public void start() {
-		System.out.println("AbstractManager: Starting " + getClass().getSimpleName());
+		if( DEBUG )
+			System.out.println("AbstractManager: Starting " + getClass().getSimpleName());
 		//if (thread == null) {
 			//doStop = false;
 			//String name = getClass().getSimpleName();

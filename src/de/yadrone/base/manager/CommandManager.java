@@ -72,7 +72,7 @@ import de.yadrone.base.utils.ARDroneUtils;
 
 public class CommandManager extends AbstractManager 
 {
-
+	public static final boolean DEBUG = false;
 	public final static String APPLICATION_ID = "aabbccdd";
 	public final static String PROFILE_ID = "bbccddee";
 	public final static String SESSION_ID = "ccddeeff";
@@ -501,7 +501,8 @@ public class CommandManager extends AbstractManager
 	 */
 	public CommandManager setMaxEulerAngle(Location l, float angle) {
 		angle = limit(angle, 0f, 0.52f);
-		System.out.println("CommandManager: setMaxEulerAngle (bendingAngle): " + angle + " rad");
+		if( DEBUG )
+			System.out.println("CommandManager: setMaxEulerAngle (bendingAngle): " + angle + " rad");
 		String command = "control:" + l.getCommandPrefix() + "euler_angle_max";
 		q.add(new ConfigureCommand(command, String.valueOf(angle)));
 		return this;
@@ -523,7 +524,8 @@ public class CommandManager extends AbstractManager
 	 */
 	public CommandManager setMaxAltitude(Location l, int altitude) {
 		altitude = limit(altitude, 0, 100000);
-		System.out.println("CommandManager: setMaxAltitude: " + altitude + " mm");
+		if( DEBUG )
+			System.out.println("CommandManager: setMaxAltitude: " + altitude + " mm");
 		String command = "control:" + l.getCommandPrefix() + "altitude_max";
 		q.add(new ConfigureCommand(command, altitude));
 		return this;
@@ -568,7 +570,8 @@ public class CommandManager extends AbstractManager
 	 */
 	public CommandManager setMaxVz(Location l, int speed) {
 		speed = limit(speed, 0, 2000);
-		System.out.println("CommandManager: setMaxVz (verticalSpeed): " + speed + " mm");
+		if( DEBUG )
+			System.out.println("CommandManager: setMaxVz (verticalSpeed): " + speed + " mm");
 		String command = "control:" + l.getCommandPrefix() + "control_vz_max";
 		q.add(new ConfigureCommand(command, speed));
 		return this;
@@ -608,7 +611,8 @@ public class CommandManager extends AbstractManager
 	 * @param outdoor_hull  TRUE, if outdoor shell is used. FALSE, if indoor shell is used.
 	 */
 	public CommandManager setOutdoor(boolean flying_outdoor, boolean outdoor_hull) {
-		System.out.println("CommandManager: setOutdoor(flyingOutdoor,usingOutdoorHull) = " + flying_outdoor + "," + outdoor_hull);
+		if( DEBUG )
+			System.out.println("CommandManager: setOutdoor(flyingOutdoor,usingOutdoorHull) = " + flying_outdoor + "," + outdoor_hull);
 		q.add(new ConfigureCommand("control:outdoor", flying_outdoor));
 		q.add(new ConfigureCommand("control:flight_without_shell", outdoor_hull));
 		return this;
@@ -900,7 +904,8 @@ public class CommandManager extends AbstractManager
 		}
 		close();
 		timer.cancel();
-		System.out.println("doStop() called ? " + doStop + " ... Stopped " + getClass().getSimpleName());
+		if( DEBUG )
+			System.out.println("doStop() called ? " + doStop + " ... Stopped " + getClass().getSimpleName());
 	}
 
 	private CommandManager initARDrone() 
@@ -938,7 +943,7 @@ public class CommandManager extends AbstractManager
 	}
 
 	private synchronized void sendCommand(ATCommand c) throws InterruptedException, IOException {
-		if (!(c instanceof KeepAliveCommand)) {
+		if (DEBUG && !(c instanceof KeepAliveCommand)) {
 			 System.out.println("CommandManager: send " + c.getCommandString(seq));
 		}
 		
@@ -987,7 +992,8 @@ public class CommandManager extends AbstractManager
 				}
 			}
 			if (n == 0 && controlAck != b) {
-				System.err.println("Control ack timeout " + String.valueOf(b));
+				if( DEBUG )
+					System.err.println("Control ack timeout " + String.valueOf(b));
 				excListener.exeptionOccurred(new CommandException(new RuntimeException("Control ACK timeout")));
 			}
 		}
