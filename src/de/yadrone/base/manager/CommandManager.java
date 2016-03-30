@@ -72,7 +72,7 @@ import de.yadrone.base.utils.ARDroneUtils;
 
 public class CommandManager extends AbstractManager 
 {
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 	public final static String APPLICATION_ID = "aabbccdd";
 	public final static String PROFILE_ID = "bbccddee";
 	public final static String SESSION_ID = "ccddeeff";
@@ -905,7 +905,7 @@ public class CommandManager extends AbstractManager
 		close();
 		timer.cancel();
 		if( DEBUG )
-			System.out.println("doStop() called ? " + doStop + " ... Stopped " + getClass().getSimpleName());
+			System.out.println("CommandManager.doStop() called ? " + doStop + " ... Stopped " + getClass().getSimpleName());
 	}
 
 	private CommandManager initARDrone() 

@@ -293,8 +293,11 @@ public class ARDroneLand implements IARDroneLand, IExceptionListener {
 	
 	private void informExceptionListener(ARDroneException exception)
 	{
-		for (int i=0; i < excListenerList.size(); i++)
+		System.out.println("Start Informing exception listeners of "+exception);
+		for (int i=0; i < excListenerList.size(); i++) {
 			excListenerList.get(i).exeptionOccurred(exception);
+		}
+		System.out.println("End Informing exception listeners of "+exception);
 	}
 	
 	/**

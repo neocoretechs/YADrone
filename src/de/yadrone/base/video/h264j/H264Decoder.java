@@ -15,7 +15,7 @@ import de.yadrone.base.video.VideoDecoder;
  */
 public class H264Decoder implements VideoDecoder
 {
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private RGBListener listener;
 	private Object listenerMutex = new Object();
 
@@ -41,6 +41,8 @@ public class H264Decoder implements VideoDecoder
 		}
 		H264StreamCallback hsc = new H264StreamCallback(is, listener);
 		hsc.playStream();
+		if( DEBUG )
+			System.out.println("H264Decoder.decode leaving decoder method");
 	}
 
 	public void stop()

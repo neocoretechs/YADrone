@@ -31,7 +31,7 @@ import de.yadrone.base.video.VideoDecoder;
 
 public class VideoManager extends AbstractTCPManager implements RGBListener 
 {
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private IExceptionListener excListener;
 	
 	private VideoDecoder decoder;
@@ -68,8 +68,11 @@ public class VideoManager extends AbstractTCPManager implements RGBListener
 	
 	public boolean connect(int port) throws IOException
 	{
-		if (decoder == null)
+		if (decoder == null) {
+			if( DEBUG )
+				System.out.println("Drone video manager connect failed, decoder null");
 			return false;
+		}
 
 		return super.connect(port);
 	}
@@ -97,13 +100,17 @@ public class VideoManager extends AbstractTCPManager implements RGBListener
 		}
 		if(DEBUG)
 			System.out.println("VideoManager: start connecting again ...");
+		
 		ThreadPoolManager.getInstance().spin(this);
 	}
 	
 	@Override
 	public void run() {
-		if (decoder == null)
+		if (decoder == null) {
+			if( DEBUG )
+				System.out.println("Drone video manager: decoder null, return from runnable");
 			return;
+		}
 		while(true) {
 			try
 			{
@@ -131,6 +138,8 @@ public class VideoManager extends AbstractTCPManager implements RGBListener
 
 	@Override
 	public void close() {
+		if( DEBUG )
+			System.out.println("Drone video manager invoking close");
 		if (decoder == null)
 			return;
 
